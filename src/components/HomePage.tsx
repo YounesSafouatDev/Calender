@@ -1,33 +1,55 @@
-import { siteConfig } from "@/config/site";
+import React, { useState, useEffect } from 'react';
 import { buttonVariants } from "@/components/ui/button";
+import DataPicker from "../Pages/DataPicker";
+import WeekHeader from "@/Pages/WeekHeader";
+import CalendarView from "@/Pages/CalendarView";
 
 export default function HomePage() {
+  const [currentWeekStartDate, setCurrentWeekStartDate] = useState(new Date());
+
+  // Update the week start date based on local storage
+  useEffect(() => {
+    const storedDate = localStorage.getItem('currentWeekStartDate');
+    if (storedDate) {
+      setCurrentWeekStartDate(new Date(storedDate));
+    }
+  }, []);
+
+  // Save the week start date to local storage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('currentWeekStartDate', currentWeekStartDate.toISOString());
+  }, [currentWeekStartDate]);
+
   return (
-    <section className="container grid items-center gap-6 pb-8 pt-6 md:py-10">
-      <div className="flex max-w-[980px] flex-col items-start gap-2">
-        <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
-          Beautifully designed components <br className="hidden sm:inline" />
-          built with Radix UI and Tailwind CSS.
-        </h1>
-        <p className="max-w-[700px] text-lg text-muted-foreground">
-          Accessible and customizable components that you can copy and paste
-          into your apps. Free. Open Source. And Next.js 13 Ready.
-        </p>
+    <div className="flex h-screen gap-6">
+      {/* Sidebar */}
+      <div className="w-64 flex flex-col">
+        {/* Date Picker */}
+        <div className="flex-1 w-[270px]">
+          {/* Date Picker content goes here */}
+          <DataPicker />
+        </div>
+
+        {/* Planning Section */}
+        <div className="flex-1 bg-blue-700">
+          {/* Planning content goes here */}
+        </div>
       </div>
-      <div className="flex gap-4">
-        <a
-          href={siteConfig.links.docs}
-          className={buttonVariants()}
-        >
-          Documentation
-        </a>
-        <a
-          href={siteConfig.links.github}
-          className={buttonVariants({ variant: "outline" })}
-        >
-          GitHub
-        </a>
+
+      {/* Main content */}
+      <div className="flex-1 flex flex-col">
+        {/* Header */}
+        <div className="h-16 my-[40px]">
+          {/* Header content goes here */}
+          <WeekHeader currentWeekStartDate={currentWeekStartDate} setCurrentWeekStartDate={setCurrentWeekStartDate} />
+        </div>
+
+        {/* Calendar view */}
+        <div className="flex-1">
+          {/* Calendar content goes here */}
+          <CalendarView currentWeekStartDate={currentWeekStartDate} />
+        </div>
       </div>
-    </section>
-  )
+    </div>
+  );
 }
